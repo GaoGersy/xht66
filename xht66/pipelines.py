@@ -27,7 +27,14 @@ class Xht66Pipeline(ImagesPipeline):
         file_path=os.path.join(self.IMAGES_STORE,file_name)
         print(absoluteSrc)
         print(file_path)
-        urllib.request.urlretrieve(absoluteSrc,file_path)
+#         urllib.request.urlretrieve(absoluteSrc,file_path)
+        try:
+            ir = requests.get(absoluteSrc, timeout=3)
+            print(ir.status_code)
+            if ir.status_code == 200:
+                open(file_path, 'wb').write(ir.content)
+        except requests.exceptions.ConnectTimeout:
+            NETWORK_STATUS = False
         return item
 
         # def get_media_requests(self, item, info):
